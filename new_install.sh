@@ -14,10 +14,10 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 
-# Check larascale user account
-if [ ! -z "$(grep ^larascale: /etc/passwd)" ] && [ -z "$1" ]; then
+# Check djoudi user account
+if [ ! -z "$(grep ^djoudi: /etc/passwd)" ] && [ -z "$1" ]; then
     echo
-    echo "Error! User - larascale - exists! Please remove larascale user account before proceeding."
+    echo "Error! User - djoudi - exists! Please remove djoudi user account before proceeding."
     echo
     exit 1
 fi
@@ -50,7 +50,7 @@ echo '  ██║     ██╔══██║██╔══██╗██╔�
 echo '  ███████╗██║  ██║██║  ██║██║  ██║███████║╚██████╗██║  ██║███████╗███████╗ '
 echo '  ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝ '
 echo
-echo "                    LaraScale package for $os $codename $release"
+echo "                    Djoudi package for $os $codename $release"
 echo -e "\n\n"                                             
 
 
@@ -59,10 +59,9 @@ echo "=========== Install overview ==========="
 echo
 echo "- Packages: mc, zip, unzip, htop, software-properties-common, build-essential, python-software-properties, python-pip, fail2ban, gcc, libmcrypt4, libpcre3-dev, ufw, unattended-upgrades & whois"
 echo "- Nginx (stable)"
-echo "- PHP 7.1 with PHP-FPM"
-echo "- PostgreSQL 9.6"
-echo "- NodeJS 6.x"
-echo "- Memcached Server"
+echo "- PHP 7.2 with PHP-FPM"
+echo "- PostgreSQL 10"
+echo "- NodeJS 10.x Server"
 echo "- Python Supervisor"
 echo "- Beanstalkd Queques Server"
 echo "- Composer + Laravel (lastest version)"
@@ -88,9 +87,9 @@ apt-get install zsh mc zip unzip htop software-properties-common build-essential
 # Disabled default IPV6 listing
 sudo sed -i "s/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/" /etc/gai.conf > /dev/null 2>&1
 
-echo "- Setup timezone - Europe/Moscow..."
+echo "- Setup timezone - Africa/Algiers..."
 
-echo "Europe/Moscow" > /etc/timezone
+echo "Africa/Algiers" > /etc/timezone
 dpkg-reconfigure -f noninteractive tzdata > /dev/null 2>&1
 
 echo "- Setup automaticaly Security Updates..."
@@ -114,6 +113,9 @@ EOF
 # Setup UFW Firewall
 
 ufw allow 22 > /dev/null 2>&1
+ufw allow 22 > /dev/null 2>&1
+ufw allow 22 > /dev/null 2>&1
+ufw allow 22 > /dev/null 2>&1
 ufw allow 80 > /dev/null 2>&1
 ufw allow 443 > /dev/null 2>&1
 ufw --force enable > /dev/null 2>&1
@@ -131,37 +133,37 @@ echo
 #useradd -g sudo -d /home/larascale -m -s /bin/bash larascale > /dev/null 2>&1
 #mkdir -p /home/larascale/.ssh > /dev/null 2>&1
 
-useradd larascale > /dev/null 2>&1
-mkdir -p /home/larascale/.ssh > /dev/null 2>&1
-adduser larascale sudo > /dev/null 2>&1
+useradd Djoudi > /dev/null 2>&1
+mkdir -p /home/djoudi/.ssh > /dev/null 2>&1
+adduser djoudi sudo > /dev/null 2>&1
 
 
-# Setup Bash For larascale User
+# Setup Bash For Djoudi User
 
-chsh -s /bin/bash larascale > /dev/null 2>&1
-cp /root/.profile /home/larascale/.profile > /dev/null 2>&1
-cp /root/.bashrc /home/larascale/.bashrc > /dev/null 2>&1
+chsh -s /bin/bash djoudi > /dev/null 2>&1
+cp /root/.profile /home/djoudi/.profile > /dev/null 2>&1
+cp /root/.bashrc /home/djoudi/.bashrc > /dev/null 2>&1
 
 # Set The Sudo Password For larascale
 
-LARASCALE_USER_PASSWORD=$(gen_pass)
-echo -e "$LARASCALE_USER_PASSWORD\n$LARASCALE_USER_PASSWORD\n" | passwd larascale > /dev/null 2>&1
+DJOUDI_USER_PASSWORD=$(gen_pass)
+echo -e "$DJOUDI_USER_PASSWORD\n$DJOUDI_USER_PASSWORD\n" | passwd djoudi > /dev/null 2>&1
 
 # Create The Server SSH Key
 
-ssh-keygen -f /home/larascale/.ssh/id_rsa -t rsa -N '' > /dev/null 2>&1
+ssh-keygen -f /home/djoudi/.ssh/id_rsa -t rsa -N '' > /dev/null 2>&1
 
 # Add larascale User To www-data Group
 
-usermod -a -G www-data larascale > /dev/null 2>&1
-id larascale > /dev/null 2>&1
-groups larascale > /dev/null 2>&1
+usermod -a -G www-data djoudi > /dev/null 2>&1
+id djoudi > /dev/null 2>&1
+groups djoudi > /dev/null 2>&1
 
 # Setup larascale Home Directory Permissions
 
-chown -R larascale:larascale /home/larascale > /dev/null 2>&1
-chmod -R 755 /home/larascale > /dev/null 2>&1
-chmod 700 /home/larascale/.ssh/id_rsa > /dev/null 2>&1
+chown -R djoudi:djoudi /home/djoudi > /dev/null 2>&1
+chmod -R 755 /home/djoudi > /dev/null 2>&1
+chmod 700 /home/djoudi/.ssh/id_rsa > /dev/null 2>&1
 
 
 
@@ -180,7 +182,7 @@ apt-get install nginx -y > /dev/null 2>&1
 
 # Configure Primary Nginx Settings
 
-sed -i "s/user www-data;/user larascale;/" /etc/nginx/nginx.conf
+sed -i "s/user www-data;/user djoudi;/" /etc/nginx/nginx.conf
 sed -i "s/worker_processes.*/worker_processes auto;/" /etc/nginx/nginx.conf
 sed -i "s/# multi_accept.*/multi_accept on;/" /etc/nginx/nginx.conf
 sed -i "s/# server_names_hash_bucket_size.*/server_names_hash_bucket_size 64;/" /etc/nginx/nginx.conf
@@ -217,8 +219,8 @@ EOF
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
 
-wget https://raw.githubusercontent.com/globalmac/Larascale/master/nginx/laravel -O /etc/nginx/sites-available/laravel > /dev/null 2>&1
-ln -s /etc/nginx/sites-available/laravel /etc/nginx/sites-enabled/laravel
+wget https://raw.githubusercontent.com/globalmac/Larascale/master/nginx/laravel -O /etc/nginx/sites-available/tawassol > /dev/null 2>&1
+ln -s /etc/nginx/sites-available/laravel /etc/nginx/sites-enabled/tawassol
 
 service nginx restart
 
@@ -243,29 +245,29 @@ echo
 
 
 echo
-echo "=========== Install PHP7.1 with modules: ==========="
+echo "=========== Install PHP7.2 with modules: ==========="
 echo
 
 echo "1) php-pear"
-echo "2) php7.1-cli"
-echo "3) php7.1-fpm"
-echo "4) php7.1-dev"
-echo "5) php7.1-common"
-echo "6) php7.1-imap"
-echo "7) php7.1-mbstring"
-echo "8) php7.1-zip"
-echo "9) php7.1-bcmath"
-echo "10) php7.1-soap"
-echo "11) php7.1-intl"
-echo "12) php7.1-readline"
-echo "13) php7.1-mcrypt"
-echo "14) php7.1-curl"
-echo "15) php7.1-json"
-echo "16) php7.1-gd"
-echo "17) php7.1-pgsql"
-echo "18) php7.1-memcached"
-echo "19) php7.1-imagick"
-echo "20) php7.1-xml"
+echo "2) php7.2-cli"
+echo "3) php7.2-fpm"
+echo "4) php7.2-dev"
+echo "5) php7.2-common"
+echo "6) php7.2-imap"
+echo "7) php7.2-mbstring"
+echo "8) php7.2-zip"
+echo "9) php7.2-bcmath"
+echo "10) php7.2-soap"
+echo "11) php7.2-intl"
+echo "12) php7.2-readline"
+echo "13) php7.2-mcrypt"
+echo "14) php7.2-curl"
+echo "15) php7.2-json"
+echo "16) php7.2-gd"
+echo "17) php7.2-pgsql"
+echo "18) php7.2-memcached"
+echo "19) php7.2-imagick"
+echo "20) php7.2-xml"
 
 echo
 echo "- Installing, please wait..."
@@ -274,18 +276,17 @@ echo
 add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1
 apt-get update -y --force-yes -qq > /dev/null 2>&1
 
-apt-get install php-pear php7.1-cli php7.1-fpm php7.1-dev php7.1-common php7.1-imap php7.1-mbstring php7.1-zip php7.1-bcmath php7.1-soap php7.1-intl php7.1-readline php7.1-mcrypt php7.1-curl php7.1-json php7.1-gd php7.1-pgsql php7.1-memcached php7.1-imagick php7.1-xml imagemagick -y --force-yes -qq > /dev/null 2>&1
-
+apt-get install php-pear php7.2-cli php7.2-fpm php7.2-dev php7.2-common php7.2-imap php7.2-mbstring php7.2-zip php7.2-bcmath php7.2-soap php7.2-intl php7.2-readline php7.2-mcrypt php7.2-curl php7.2-json php7.2-gd php7.2-pgsql php7.2-memcached php7.2-imagick php7.2-xml imagemagick -2
 echo
 echo "- Configure some PHP settings, please wait..."
 echo
 
 # Misc. PHP CLI Configuration
 
-sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.1/cli/php.ini
-sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.1/cli/php.ini
-sudo sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.1/cli/php.ini
-#sudo sed -i "s/;date.timezone.*/date.timezone = Europe/Moscow" /etc/php/7.1/cli/php.ini   
+sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.2/cli/php.ini
+sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.2/cli/php.ini
+sudo sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.2/cli/php.ini
+#sudo sed -i "s/;date.timezone.*/date.timezone = Europe/Moscow" /etc/php/7.2/cli/php.ini   
 
 # Configure Sessions Directory Permissions
 
@@ -294,22 +295,22 @@ chmod +t /var/lib/php/sessions
 
 # Tweak Some PHP-FPM Settings
 
-sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.1/fpm/php.ini
-sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.1/fpm/php.ini
-sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.1/fpm/php.ini
-sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.1/fpm/php.ini
-#sed -i "s/;date.timezone.*/date.timezone = Europe/Moscow/" /etc/php/7.1/fpm/php.ini
+sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.2/fpm/php.ini
+sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.2/fpm/php.ini
+sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.2/fpm/php.ini
+sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.2/fpm/php.ini
+#sed -i "s/;date.timezone.*/date.timezone = Europe/Moscow/" /etc/php/7.2/fpm/php.ini
 
 # Configure FPM Pool Settings
 
-sed -i "s/^user = www-data/user = larascale/" /etc/php/7.1/fpm/pool.d/www.conf
-sed -i "s/^group = www-data/group = larascale/" /etc/php/7.1/fpm/pool.d/www.conf
-sed -i "s/;listen\.owner.*/listen.owner = larascale/" /etc/php/7.1/fpm/pool.d/www.conf
-sed -i "s/;listen\.group.*/listen.group = larascale/" /etc/php/7.1/fpm/pool.d/www.conf
-sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/7.1/fpm/pool.d/www.conf
-#sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 600/" /etc/php/7.1/fpm/pool.d/www.conf
+sed -i "s/^user = www-data/user = djoudi/" /etc/php/7.2/fpm/pool.d/www.conf
+sed -i "s/^group = www-data/group = djoudi/" /etc/php/7.2/fpm/pool.d/www.conf
+sed -i "s/;listen\.owner.*/listen.owner = djoudi/" /etc/php/7.2/fpm/pool.d/www.conf
+sed -i "s/;listen\.group.*/listen.group = djoudi/" /etc/php/7.2/fpm/pool.d/www.conf
+sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/7.2/fpm/pool.d/www.conf
+#sed -i "s/;request_terminate_timeout.*/request_terminate_timeout = 600/" /etc/php/7.2/fpm/pool.d/www.conf
 
-service php7.1-fpm restart > /dev/null 2>&1
+service php7.2-fpm restart > /dev/null 2>&1
 
 echo
 echo "- Configure Memcached Server, please wait..."
@@ -320,7 +321,7 @@ sed -i 's/-l 127.0.0.1/-l 0.0.0.0/' /etc/memcached.conf
 service memcached restart > /dev/null 2>&1
 
 echo
-echo "- PHP7.1 & Memcached installed succesful!"
+echo "- PHP7.2 & Memcached installed succesful!"
 echo
 
 echo
@@ -349,10 +350,10 @@ echo
 
 
 echo
-echo "=========== Install NodeJS 6.x ==========="
+echo "=========== Install NodeJS 10.x ==========="
 echo
 
-curl --silent --location https://deb.nodesource.com/setup_6.x | bash - > /dev/null 2>&1
+curl --silent --location https://deb.nodesource.com/setup_10.x | bash - > /dev/null 2>&1
 
 apt-get update -y --force-yes -qq > /dev/null 2>&1
 
@@ -368,7 +369,7 @@ echo "- NodeJS installed succesful!"
 echo
 
 echo
-echo "=========== Install PostgreSQL 9.6 ==========="
+echo "=========== Install PostgreSQL 10 ==========="
 echo
 
 PSQL_ROOT_PASSWORD=$(gen_pass)
@@ -393,15 +394,15 @@ sudo -i -u postgres psql -q -c "create database larascale with encoding='UNICODE
 sudo -i -u postgres psql -q -c "create user larascale with password '$PSQL_PASSWORD';"
 sudo -i -u postgres psql -q -c "grant all privileges on database larascale to larascale;"
 sudo -i -u postgres psql -q -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-sudo -i -u postgres psql -d larascale -q -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+sudo -i -u postgres psql -d djoudi -q -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
 echo
-echo "==> PostgreSQL 9.6 installed succesful!"
+echo "==> PostgreSQL 10 installed succesful!"
 echo
 
 
 echo
-echo "=========== Installing Composer & Laravel 5.4 ==========="
+echo "=========== Installing Composer & Laravel 5.5 ==========="
 echo
 
 cd /home/larascale
@@ -409,12 +410,12 @@ curl -sS https://getcomposer.org/installer | php > /dev/null 2>&1
 mv composer.phar /usr/local/bin/composer > /dev/null 2>&1 > /dev/null 2>&1
 
 echo
-echo "Installing Laravel 5.4 by Composer, please wait, it can be more than 3-5 minutes..."
+echo "Installing Laravel 5.5 by Composer, please wait, it can be more than 3-5 minutes..."
 echo
 
 composer create-project --prefer-dist laravel/laravel laravel > /dev/null 2>&1
 
-chown -R larascale:larascale /home/larascale > /dev/null 2>&1
+chown -R larascale:larascale /home/djoudi > /dev/null 2>&1
 cd /home/larascale/laravel
 chmod -R 777 storage > /dev/null 2>&1
 chmod -R 777 bootstrap/cache > /dev/null 2>&1
