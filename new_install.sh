@@ -113,25 +113,28 @@ EOF
 # Setup UFW Firewall
 
 ufw allow 22 > /dev/null 2>&1
-ufw allow 22 > /dev/null 2>&1
-ufw allow 22 > /dev/null 2>&1
-ufw allow 22 > /dev/null 2>&1
+ufw allow 41 > /dev/null 2>&1
+ufw allow 42 > /dev/null 2>&1
+ufw allow 99 > /dev/null 2>&1
+ufw allow 3306 > /dev/null 2>&1
+ufw allow 465 > /dev/null 2>&1
+ufw allow 587 > /dev/null 2>&1
 ufw allow 80 > /dev/null 2>&1
 ufw allow 443 > /dev/null 2>&1
 ufw --force enable > /dev/null 2>&1
 
 echo
-echo "- UFW Firewall enabled succesful! Allowed - 22, 80 & 443 ports!"
+echo "- UFW Firewall enabled succesful! Allowed - 22,41,42,99,3306,465,587, 80 & 443 ports!"
 echo
 
 
 
 echo
-echo "=========== Larascale user setup ==========="
+echo "=========== Djoudi user setup ==========="
 echo
 
-#useradd -g sudo -d /home/larascale -m -s /bin/bash larascale > /dev/null 2>&1
-#mkdir -p /home/larascale/.ssh > /dev/null 2>&1
+#useradd -g sudo -d /home/djoudi -m -s /bin/bash djoudi > /dev/null 2>&1
+#mkdir -p /home/djoudi/.ssh > /dev/null 2>&1
 
 useradd Djoudi > /dev/null 2>&1
 mkdir -p /home/djoudi/.ssh > /dev/null 2>&1
@@ -298,7 +301,7 @@ chmod +t /var/lib/php/sessions
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.2/fpm/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.2/fpm/php.ini
 sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.2/fpm/php.ini
-sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.2/fpm/php.ini
+sed -i "s/memory_limit = .*/memory_limit = 815M/" /etc/php/7.2/fpm/php.ini
 #sed -i "s/;date.timezone.*/date.timezone = Europe/Moscow/" /etc/php/7.2/fpm/php.ini
 
 # Configure FPM Pool Settings
@@ -390,9 +393,9 @@ echo "- Setting up PostgreSQL..."
 echo
 
 sudo -i -u postgres psql -q -c "ALTER USER postgres WITH PASSWORD '$PSQL_ROOT_PASSWORD';"
-sudo -i -u postgres psql -q -c "create database larascale with encoding='UNICODE';"
-sudo -i -u postgres psql -q -c "create user larascale with password '$PSQL_PASSWORD';"
-sudo -i -u postgres psql -q -c "grant all privileges on database larascale to larascale;"
+sudo -i -u postgres psql -q -c "create database tawassol with encoding='UNICODE';"
+sudo -i -u postgres psql -q -c "create user tawassol with password '$PSQL_PASSWORD';"
+sudo -i -u postgres psql -q -c "grant all privileges on database tawassol to tawassol;"
 sudo -i -u postgres psql -q -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 sudo -i -u postgres psql -d djoudi -q -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
@@ -415,8 +418,8 @@ echo
 
 composer create-project --prefer-dist laravel/laravel laravel > /dev/null 2>&1
 
-chown -R larascale:larascale /home/djoudi > /dev/null 2>&1
-cd /home/larascale/laravel
+chown -R djoudi:djoudi /home/djoudi > /dev/null 2>&1
+cd /home/djoudi/laravel
 chmod -R 777 storage > /dev/null 2>&1
 chmod -R 777 bootstrap/cache > /dev/null 2>&1
 
@@ -427,13 +430,13 @@ service postgresql restart > /dev/null 2>&1
 echo "==========="
 echo "Installation complete successfully! Your new Laravel is ready!"
 echo "1) SSH user:"
-echo "Login: larascale"
+echo "Login: Djoudi"
 echo "Password: $LARASCALE_USER_PASSWORD"
 echo "2) PostgreSQL info:"
 echo "Login: postgres"
 echo "Password: $PSQL_ROOT_PASSWORD"
 echo
-echo "Login: larascale"
+echo "Login: Djoudi"
 echo "Password: $PSQL_PASSWORD" 
 echo
 echo "Your Laravel site run on - http://$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')"
